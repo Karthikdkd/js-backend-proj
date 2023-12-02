@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
@@ -44,7 +44,7 @@ const userSchema = new mongoose.Schema({
 // pre hook -> run just before saving data.
 userSchema.pre("save", async function(next) {
     if(this.isModified("password")) {
-        this.password = bcrypt.hash(this.password, 10)
+        this.password = await bcrypt.hash(this.password, 10)
         next();    
     } else {
         next();
@@ -77,4 +77,4 @@ userSchema.methods.generateRefreshToken = function(){
     {expiresIn: process.env.REFRESH_TOKEN_EXPIRY}
     )
 }
-export default User = mongoose.model('User', userSchema);
+export const User = mongoose.model('User', userSchema);
